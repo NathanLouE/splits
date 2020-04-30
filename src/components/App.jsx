@@ -10,13 +10,14 @@ class App extends Component {
     super(props);
     this.state = {
       timerOn: true,
-      seconds: "00", // responsible for the seconds
-      minutes: "00", // responsible for the minutes
-      hours: "0", // responsible for hours
+      seconds: "0" + 0, // responsible for the seconds
+      minutes: "0" + 0, // responsible for the minutes
+      hours: 0, // responsible for hours
       secondsCounting: 0
     };
     this.handleChange = this.handleChange.bind(this);
     this.tick = this.tick.bind(this);
+    this.startCount = this.startCount.bind(this);
   }
     handleChange(event) {
       this.setState({
@@ -25,13 +26,16 @@ class App extends Component {
     }
     
     tick() {
-      let hr = Math.floor((this.secondsCounting / 60) / 60)
-      let min = Math.floor(this.secondsCounting / 60);
-      let sec = this.secondsCounting - min * 60;
+      let hr = Math.floor((this.state.secondsCounting / 60) / 60)
+      let min = Math.floor(this.state.secondsCounting / 60);
+      let sec = this.state.secondsCounting - min * 60;
+      let secCount = this.state.secondsCounting + 1;
+      console.log("hr", hr, "min", min, "sec", sec); 
       this.setState({
         minutes: min,
         seconds: sec,
-        hours: hr
+        hours: hr,
+        secondsCounting: secCount
       });
   
       if (sec < 10) {
@@ -44,14 +48,14 @@ class App extends Component {
           minutes: "0" + min
         });
       }
-      
-      this.secondsCounting++;
+      console.log("called");
     }
 
     startCount() {
       this.intervalHandle = setInterval(this.tick, 1000);
       let time = this.state.minutes;
       this.secondsRemaining = time * 60;
+      
     }
 
   render(){
