@@ -3,7 +3,9 @@ import React from 'react';
 import '../App.css';
 import Timer from './Timer';
 import StartButton from './StartButton';
+import PauseButton from './PauseButton';
 import { Component } from 'react';
+import ResetButton from './ResetButton';
 
 class App extends Component {
   constructor(props) { 
@@ -18,6 +20,8 @@ class App extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.tick = this.tick.bind(this);
     this.startCount = this.startCount.bind(this);
+    this.pauseCount = this.pauseCount.bind(this);
+    this.resetCount = this.resetCount.bind(this);
   }
     handleChange(event) {
       this.setState({
@@ -55,18 +59,32 @@ class App extends Component {
       this.intervalHandle = setInterval(this.tick, 1000);
       let time = this.state.minutes;
       this.secondsRemaining = time * 60;
-      
+    }
+
+    pauseCount() {
+      this.setState({isOn: false})
+      clearInterval(this.intervalHandle)
+    }
+    
+    resetCount() {
+      clearInterval(this.intervalHandle);
+      this.setState({
+        hours: 0,
+        minutes: "0" + 0,
+        seconds: "0" + 0
+      })
     }
 
   render(){
     return (
       <div className="App">
         <header className="App-header">
+
           <h1>Speedrun Timer!</h1>
-
-
           <Timer hours={this.state.hours} minutes={this.state.minutes} seconds={this.state.seconds} />
           <StartButton startCount={this.startCount} />
+          <PauseButton pauseCount={this.pauseCount} />
+          <ResetButton resetCount={this.resetCount} />
         </header>
       </div>
     );
