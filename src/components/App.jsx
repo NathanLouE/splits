@@ -11,17 +11,18 @@ class App extends Component {
   constructor(props) { 
     super(props);
     this.state = {
-      timerOn: true,
       seconds: "0" + 0, // responsible for the seconds
       minutes: "0" + 0, // responsible for the minutes
       hours: 0, // responsible for hours
-      secondsCounting: 0
+      secondsCounting: 0,
+      split: []
     };
     this.handleChange = this.handleChange.bind(this);
     this.tick = this.tick.bind(this);
     this.startCount = this.startCount.bind(this);
     this.pauseCount = this.pauseCount.bind(this);
     this.resetCount = this.resetCount.bind(this);
+    this.pushSplit = this.pushSplit.bind(this)
   }
     handleChange(event) {
       this.setState({
@@ -62,26 +63,42 @@ class App extends Component {
     }
 
     pauseCount() {
-      this.setState({isOn: false})
       clearInterval(this.intervalHandle)
     }
     
     resetCount() {
       clearInterval(this.intervalHandle);
       this.setState({
-        hours: 0,
-        minutes: "0" + 0,
-        seconds: "0" + 0
+        seconds: "0" + 0, 
+        minutes: "0" + 0, 
+        hours: 0, 
+        secondsCounting: 0
       })
     }
 
+    pushSplit() {
+      let splitList = this.state.split;
+      splitList.push(document.getElementById("split").value)
+      this.setState({
+        split: splitList
+      })
+      console.log(splitList);
+    }
+
+    
   render(){
+    const splitList = this.state.split.map(split => {
+        return <li>{split}</li>;
+      });
+    console.log(splitList);
     return (
       <div className="App">
         <header className="App-header">
-
           <h1>Speedrun Timer!</h1>
+          <ol>{splitList}</ol>
           <Timer hours={this.state.hours} minutes={this.state.minutes} seconds={this.state.seconds} />
+          <input placeholder="Enter splits here!" id="split"></input>
+          <button onClick={this.pushSplit}>Add Split</button>
           <StartButton startCount={this.startCount} />
           <PauseButton pauseCount={this.pauseCount} />
           <ResetButton resetCount={this.resetCount} />
