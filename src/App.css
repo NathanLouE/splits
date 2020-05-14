@@ -43,3 +43,7 @@ button {
   margin: 10px;
   padding: 20px;
 }
+
+ol {
+  text-align: left;
+}

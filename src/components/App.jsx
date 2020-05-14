@@ -6,6 +6,7 @@ import StartButton from './StartButton';
 import PauseButton from './PauseButton';
 import { Component } from 'react';
 import ResetButton from './ResetButton';
+import SplitButton from './SplitButton';
 
 class App extends Component {
   constructor(props) { 
@@ -15,14 +16,16 @@ class App extends Component {
       minutes: "0" + 0, // responsible for the minutes
       hours: 0, // responsible for hours
       secondsCounting: 0,
-      split: []
+      split: [],
+      timerOn: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.tick = this.tick.bind(this);
     this.startCount = this.startCount.bind(this);
     this.pauseCount = this.pauseCount.bind(this);
     this.resetCount = this.resetCount.bind(this);
-    this.pushSplit = this.pushSplit.bind(this)
+    this.pushSplit = this.pushSplit.bind(this);
+    this.pullSplit = this.pullSplit.bind(this)
   }
     handleChange(event) {
       this.setState({
@@ -60,6 +63,7 @@ class App extends Component {
       this.intervalHandle = setInterval(this.tick, 1000);
       let time = this.state.minutes;
       this.secondsRemaining = time * 60;
+      this.setState({timerOn: true})
     }
 
     pauseCount() {
@@ -85,20 +89,31 @@ class App extends Component {
       console.log(splitList);
     }
 
+    pullSplit() {
+      let splitList = document.getElementById("split").value;
+      splitList.removeChild(splitList.childNodes[splitList.length - 1]);
+    }
     
-  render(){
+    split() {
+      let hr = Math.floor((this.state.secondsCounting / 60) / 60)
+      let min = Math.floor(this.state.secondsCounting / 60);
+      let sec = this.state.secondsCounting - min * 60;
+      return <p>{hr} : {min} : {sec}</p>
+    }
+
+  render() {
     const splitList = this.state.split.map(split => {
-        return <li>{split}</li>;
+        return <li id="split">{split}</li>;
       });
     console.log(splitList);
     return (
       <div className="App">
         <header className="App-header">
           <h1>Speedrun Timer!</h1>
-          <ol>{splitList}</ol>
+          <ol>{splitList}</ol> 
           <Timer hours={this.state.hours} minutes={this.state.minutes} seconds={this.state.seconds} />
           <input placeholder="Enter splits here!" id="split"></input>
-          <button onClick={this.pushSplit}>Add Split</button>
+          <button onClick={this.pushSplit}>Add Split</button> 
           <StartButton startCount={this.startCount} />
           <PauseButton pauseCount={this.pauseCount} />
           <ResetButton resetCount={this.resetCount} />
