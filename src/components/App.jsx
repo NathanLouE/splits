@@ -17,7 +17,7 @@ class App extends Component {
       hours: 0, // responsible for hours
       secondsCounting: 0,
       split: [],
-      timerOn: false
+      splitTimer: []
     };
     this.handleChange = this.handleChange.bind(this);
     this.tick = this.tick.bind(this);
@@ -25,7 +25,8 @@ class App extends Component {
     this.pauseCount = this.pauseCount.bind(this);
     this.resetCount = this.resetCount.bind(this);
     this.pushSplit = this.pushSplit.bind(this);
-    this.pullSplit = this.pullSplit.bind(this)
+    this.pushSplitTime = this.pushSplitTime.bind(this);
+    this.pullSplit = this.pullSplit.bind(this);
   }
     handleChange(event) {
       this.setState({
@@ -64,14 +65,20 @@ class App extends Component {
       let time = this.state.minutes;
       this.secondsRemaining = time * 60;
       this.setState({timerOn: true})
+      document.getElementById("startBut").disabled = true;
+      document.getElementById("splitBut").disabled = false;
     }
 
     pauseCount() {
       clearInterval(this.intervalHandle)
+      this.setState({timerOn: false})
+      document.getElementById("startBut").disabled = false;
     }
     
     resetCount() {
       clearInterval(this.intervalHandle);
+      this.setState({timerOn: false})
+      document.getElementById("startBut").disabled = false;
       this.setState({
         seconds: "0" + 0, 
         minutes: "0" + 0, 
@@ -80,43 +87,52 @@ class App extends Component {
       })
     }
 
+    pushSplitTime() {
+      let splitTime = this.state.splitTimer;
+      splitTime.push(this.state.hours + ':' + this.state.minutes + ':' + this.state.seconds);
+      this.setState({splitTimer: splitTime})
+    }
+
     pushSplit() {
       let splitList = this.state.split;
       splitList.push(document.getElementById("split").value)
-      this.setState({
-        split: splitList
-      })
+      this.setState({split: splitList})
       console.log(splitList);
     }
 
     pullSplit() {
       let splitList = document.getElementById("split").value;
-      splitList.removeChild(splitList.childNodes[splitList.length - 1]);
-    }
-    
-    split() {
-      let hr = Math.floor((this.state.secondsCounting / 60) / 60)
-      let min = Math.floor(this.state.secondsCounting / 60);
-      let sec = this.state.secondsCounting - min * 60;
-      return <p>{hr} : {min} : {sec}</p>
+      splitList.pop();
     }
 
   render() {
     const splitList = this.state.split.map(split => {
-        return <li id="split">{split}</li>;
+        return <li key={split.id}>{split}</li>;
       });
+    const splitTimer = this.state.splitTimer.map(splitTime=> {
+      return <li key={splitTime.id}>{splitTime}</li>
+    })
     console.log(splitList);
     return (
       <div className="App">
         <header className="App-header">
-          <h1>Speedrun Timer!</h1>
-          <ol>{splitList}</ol> 
+          <h1 style={{color: 'gold'}}>Speedrun Timer!</h1>
           <Timer hours={this.state.hours} minutes={this.state.minutes} seconds={this.state.seconds} />
-          <input placeholder="Enter splits here!" id="split"></input>
-          <button onClick={this.pushSplit}>Add Split</button> 
-          <StartButton startCount={this.startCount} />
-          <PauseButton pauseCount={this.pauseCount} />
-          <ResetButton resetCount={this.resetCount} />
+          <div id='container' style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
+            <div id='butContainer' style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+            <input placeholder="Enter splits here!" id="split"></input>
+            <button id='splitBut' onClick={this.pushSplit}>Add Split</button> 
+              <StartButton startCount={this.startCount} />
+              <PauseButton pauseCount={this.pauseCount} />
+              <ResetButton resetCount={this.resetCount} />
+              <SplitButton pushSplitTime={this.pushSplitTime} />
+            </div>  
+          
+            <div id='splitContainer' style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+              <ol id='splitList' style={{marginRight: 50, marginLeft: 50}}>{splitList}</ol> 
+              <ol id="splitTimer" style={{}}>{splitTimer}</ol>
+            </div>
+          </div>
         </header>
       </div>
     );

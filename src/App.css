@@ -45,5 +45,8 @@ button {
 }
 
 ol {
-  text-align: left;
+  flex-direction: row;
 }
+
+
+
