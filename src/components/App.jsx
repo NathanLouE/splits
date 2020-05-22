@@ -116,7 +116,8 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 style={{color: 'gold'}}>Speedrun Timer!</h1>
+          <h1 style={{color: 'gold'}}>Speedrun Timer/Stopwatch</h1>
+          <p style={{color:'yellow'}}>By Nathan Louie</p>
           <Timer hours={this.state.hours} minutes={this.state.minutes} seconds={this.state.seconds} />
           <div id='container' style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
             <div id='butContainer' style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
